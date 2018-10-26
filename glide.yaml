@@ -15,9 +15,11 @@ import:
 - package: k8s.io/apiextensions-apiserver
   version: kubernetes-1.11.0
 - package: github.com/openshift/api
-  version: master
+  repo: https://github.com/adambkaplan/api.git
+  version: buildconfig
 - package: github.com/openshift/client-go
-  version: master
+  repo: https://github.com/adambkaplan/client-go.git
+  version: buildconfig
 - package: github.com/openshift/library-go
   version: master
 - package: github.com/jteeuwen/go-bindata
