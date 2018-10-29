@@ -14,6 +14,8 @@ import (
 	"k8s.io/client-go/rest"
 
 	operatorv1alpha1 "github.com/openshift/api/operator/v1alpha1"
+	configclient "github.com/openshift/client-go/config/clientset/versioned"
+	configinformers "github.com/openshift/client-go/config/informers/externalversions"
 	"github.com/openshift/cluster-openshift-controller-manager-operator/pkg/apis/openshiftcontrollermanager/v1alpha1"
 	operatorconfigclient "github.com/openshift/cluster-openshift-controller-manager-operator/pkg/generated/clientset/versioned"
 
@@ -36,6 +38,7 @@ func RunOperator(clientConfig *rest.Config, stopCh <-chan struct{}) error {
 	if err != nil {
 		return err
 	}
+	openshiftConfigClient, err := configclient.NewForConfig(clientConfig)
 	v1alpha1helpers.EnsureOperatorConfigExists(
 		dynamicClient,
 		v311_00_assets.MustAsset("v3.11.0/openshift-controller-manager/operator-config.yaml"),
@@ -47,9 +50,12 @@ func RunOperator(clientConfig *rest.Config, stopCh <-chan struct{}) error {
 	kubeInformersForOpenshiftControllerManagerNamespace := informers.NewSharedInformerFactoryWithOptions(kubeClient, 10*time.Minute, informers.WithNamespace(targetNamespaceName))
 	kubeInformersForOpenshiftCoreOperatorsNamespace := informers.NewSharedInformerFactoryWithOptions(kubeClient, 10*time.Minute, informers.WithNamespace(operatorNamespaceName))
 
+	openshiftInformersForOpenshiftControllerManagerNamespace := configinformers.NewSharedInformerFactoryWithOptions(openshiftConfigClient, 10*time.Minute, configinformers.WithNamespace(targetNamespaceName))
+
 	operator := NewOpenShiftControllerManagerOperator(
 		operatorConfigInformers.Openshiftcontrollermanager().V1alpha1().OpenShiftControllerManagerOperatorConfigs(),
 		kubeInformersForOpenshiftControllerManagerNamespace,
+		openshiftInformersForOpenshiftControllerManagerNamespace,
 		operatorConfigClient.OpenshiftcontrollermanagerV1alpha1(),
 		kubeClient,
 	)
