@@ -25,11 +25,12 @@ import (
 )
 
 const (
-	kubeAPIServerNamespaceName = "openshift-kube-apiserver"
-	targetNamespaceName        = "openshift-controller-manager"
-	operatorNamespaceName      = "openshift-controller-manager-operator"
-	workQueueKey               = "key"
-	workloadFailingCondition   = "WorkloadFailing"
+	kubeAPIServerNamespaceName         = "openshift-kube-apiserver"
+	targetNamespaceName                = "openshift-controller-manager"
+	operatorNamespaceName              = "openshift-controller-manager-operator"
+	userSpecifiedGlobalConfigNamespace = "openshift-config"
+	workQueueKey                       = "key"
+	workloadFailingCondition           = "WorkloadFailing"
 )
 
 type OpenShiftControllerManagerOperator struct {
@@ -75,7 +76,7 @@ func NewOpenShiftControllerManagerOperator(
 }
 
 func (c OpenShiftControllerManagerOperator) sync() error {
-	operatorConfig, err := c.operatorConfigClient.OpenShiftControllerManagerOperatorConfigs().Get("instance", metav1.GetOptions{})
+	operatorConfig, err := c.operatorConfigClient.OpenShiftControllerManagerOperatorConfigs().Get("cluster", metav1.GetOptions{})
 	if err != nil {
 		return err
 	}

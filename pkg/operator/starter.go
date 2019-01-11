@@ -12,11 +12,11 @@ import (
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 
+	configv1 "github.com/openshift/api/config/v1"
 	configv1client "github.com/openshift/client-go/config/clientset/versioned"
 	configinformers "github.com/openshift/client-go/config/informers/externalversions"
 	"github.com/openshift/cluster-openshift-controller-manager-operator/pkg/apis/openshiftcontrollermanager/v1"
 	operatorconfigclient "github.com/openshift/cluster-openshift-controller-manager-operator/pkg/generated/clientset/versioned"
-
 	operatorclientinformers "github.com/openshift/cluster-openshift-controller-manager-operator/pkg/generated/informers/externalversions"
 	"github.com/openshift/cluster-openshift-controller-manager-operator/pkg/operator/v311_00_assets"
 	"github.com/openshift/library-go/pkg/controller/controllercmd"
@@ -76,6 +76,12 @@ func RunOperator(ctx *controllercmd.ControllerContext) error {
 
 	clusterOperatorStatus := status.NewClusterOperatorStatusController(
 		"openshift-controller-manager-operator",
+		[]configv1.ObjectReference{
+			{Group: "openshiftcontrollermanager.operator.openshift.io", Resource: "openshiftcontrollermanageroperatorconfigs", Name: "cluster"},
+			{Resource: "namespaces", Name: userSpecifiedGlobalConfigNamespace},
+			{Resource: "namespaces", Name: operatorNamespaceName},
+			{Resource: "namespaces", Name: targetNamespaceName},
+		},
 		configClient.ConfigV1(),
 		opClient,
 		ctx.EventRecorder,

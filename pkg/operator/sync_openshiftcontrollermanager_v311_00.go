@@ -95,7 +95,7 @@ func syncOpenShiftControllerManager_v311_00_to_latest(c OpenShiftControllerManag
 		progressingMessages = append(progressingMessages, fmt.Sprintf("daemonset/controller-manager: observed generation is %d, desired generation is %d.", actualDaemonSet.Status.ObservedGeneration, actualDaemonSet.ObjectMeta.Generation))
 	}
 	if operatorConfig.ObjectMeta.Generation != operatorConfig.Status.ObservedGeneration {
-		progressingMessages = append(progressingMessages, fmt.Sprintf("openshiftcontrollermanageroperatorconfigs/instance: observed generation is %d, desired generation is %d.", operatorConfig.Status.ObservedGeneration, operatorConfig.ObjectMeta.Generation))
+		progressingMessages = append(progressingMessages, fmt.Sprintf("openshiftcontrollermanageroperatorconfigs/cluster: observed generation is %d, desired generation is %d.", operatorConfig.Status.ObservedGeneration, operatorConfig.ObjectMeta.Generation))
 	}
 	if len(progressingMessages) == 0 {
 		v1helpers.SetOperatorCondition(&operatorConfig.Status.Conditions, operatorv1.OperatorCondition{
