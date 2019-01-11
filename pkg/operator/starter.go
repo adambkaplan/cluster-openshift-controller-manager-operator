@@ -75,7 +75,7 @@ func RunOperator(ctx *controllercmd.ControllerContext) error {
 	}
 
 	clusterOperatorStatus := status.NewClusterOperatorStatusController(
-		"openshift-controller-manager-operator",
+		"openshift-controller-manager",
 		[]configv1.ObjectReference{
 			{Group: "openshiftcontrollermanager.operator.openshift.io", Resource: "openshiftcontrollermanageroperatorconfigs", Name: "cluster"},
 			{Resource: "namespaces", Name: userSpecifiedGlobalConfigNamespace},
